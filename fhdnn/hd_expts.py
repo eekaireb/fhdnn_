@@ -54,6 +54,7 @@ def run():
         ])
 
         test_data = data.valset()
+        flip_data = data.flipset()
 
         if args.iid:
             splits = mnist_iid(args.nclients)

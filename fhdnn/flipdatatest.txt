@@ -1,0 +1,29 @@
+---------------------------------------------------------------------------------------
+Namespace(D=10000, cpu=False, cuda=0, dataset='mnist', debug=False, decay_lr=0.99, fraction=0.1, iid=True, lifelong=False, local_batch_size=10, local_epochs=1, log=False, lr=1, nclients=100, nrounds=20, resnet=18, simclr=False)
+---------------------------------------------------------------------------------------
+=> Initialized model
+=> Initialized data splits
+=> Initialized clients
+=> Initialized data
+=> Begining training
+	=> Run: 1 test accuracy: 0.10126582533121109
+	=> Run: 2 test accuracy: 0.1956091821193695
+	=> Run: 3 test accuracy: 0.1988726258277893
+	=> Run: 4 test accuracy: 0.256526917219162
+	=> Run: 5 test accuracy: 0.23051820695400238
+	=> Run: 6 test accuracy: 0.22369462251663208
+	=> Run: 7 test accuracy: 0.2301226258277893
+	=> Run: 8 test accuracy: 0.20480617880821228
+	=> Run: 9 test accuracy: 0.20193830132484436
+	=> Run: 10 test accuracy: 0.25217562913894653
+	=> Run: 11 test accuracy: 0.23259493708610535
+	=> Run: 12 test accuracy: 0.2532634437084198
+	=> Run: 13 test accuracy: 0.23941852152347565
+	=> Run: 14 test accuracy: 0.2506922483444214
+	=> Run: 15 test accuracy: 0.2396163046360016
+	=> Run: 16 test accuracy: 0.2373417764902115
+	=> Run: 17 test accuracy: 0.2418908327817917
+	=> Run: 18 test accuracy: 0.234375
+	=> Run: 19 test accuracy: 0.23002374172210693
+	=> Run: 20 test accuracy: 0.22389240562915802
+=================> Mac accuracy 0.256526917219162

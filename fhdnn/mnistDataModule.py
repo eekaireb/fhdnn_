@@ -5,7 +5,7 @@ from torchvision.datasets import MNIST
 import pytorch_lightning as pl
 
 class MnistData(pl.LightningDataModule):
-    def __init__(self, root = '/home/bitwiz/codeden/data/mnist', batch_size = 512, workers = 8, debug = False, expt = 'cnn', **kw):
+    def __init__(self, root = './codeden/data/mnist', batch_size = 512, workers = 8, debug = False, expt = 'cnn', **kw):
         super().__init__()
         self.batch_size = batch_size
         self.workers = workers

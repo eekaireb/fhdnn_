@@ -11,6 +11,7 @@ from torch.utils.data import DataLoader, random_split, TensorDataset
 from torchmetrics.functional import accuracy
 from torchvision.datasets import CIFAR10
 import torchvision.transforms as transforms
+from sampling import *
 
 from pl_bolts.models.self_supervised import SimCLR
 from cifarDataModule import CifarData
@@ -22,7 +23,7 @@ class federated_framework:
     def __init__(
         self, model, data_splits, test_data, nclients=10, fraction=0.5, nrounds=20,
         local_epochs=5, local_batch_size=10, cpu=False, lr=1, debug=False,
-        scale_lr=0.99, log=False, cuda=0, iid=True, **kwargs
+        scale_lr=0.99, log=False, cuda=0, iid=True, lifelong=True, **kwargs
     ):
 
         self.lr = lr
@@ -46,6 +47,8 @@ class federated_framework:
         self.debug = debug
         self.nrounds = nrounds
         self.log = log
+
+        self.lifelong = lifelong
 
         if log:
             wandb.init(project='federated')
@@ -90,10 +93,13 @@ class federated_framework:
                     'round': run_counter
                 })
 
-            for client in choices:
-                client_acc = self.test_client(client)
-                print("\t=> Client: {} accuracy: {}".format(client, client_acc))
             print("\t=> Run: {} test accuracy: {}".format(run_counter, test_acc))
+
+            if self.lifelong:
+                if run_counter > (2/3)* self.nrounds:
+                    self.train_data = mnist_update(self.nclients, 1)
+                elif run_counter > (1/3)* self.nrounds:
+                    self.train_data = mnist_update(self.nclients, 0.5)
 
         history = {
             'rounds': rounds,

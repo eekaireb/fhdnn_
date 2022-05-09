@@ -113,7 +113,8 @@ def mnist_iid(num_users):
 	dm.train_transform = transforms.Compose([
 		transforms.ToTensor(),
 		transforms.Normalize((0.1307,), (0.3081,)),
-		transforms.Lambda(lambda x: x.repeat(3, 1, 1) )
+		transforms.Lambda(lambda x: x.repeat(3, 1, 1),
+		transforms.RandomVerticalFlip(1) )
 	])
 	
 	dm.val_transform = transforms.Compose([
@@ -129,6 +130,24 @@ def mnist_iid(num_users):
 	splits = random_split(dataset, split_array)
 
 	return splits
+
+def mnist_update(num_users, p):
+	dm = MnistData(batch_size = 512, workers = 16)
+	dm.train_transform = transforms.Compose([
+		transforms.ToTensor(),
+		transforms.Normalize((0.1307,), (0.3081,)),
+		transforms.Lambda(lambda x: x.repeat(3, 1, 1),
+		transforms.RandomVerticalFlip(p) )
+	])
+	
+	dataset = dm.trainset()
+	split_len = len(dataset) // num_users
+	split_array = [split_len] * num_users
+	splits = random_split(dataset, split_array)
+
+	return splits
+
+
 
 ####### non iid
 def mnist_niid(num_users, separated_path = None):

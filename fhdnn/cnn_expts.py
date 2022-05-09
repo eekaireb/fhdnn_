@@ -51,10 +51,10 @@ elif args.dataset == 'mnist':
 elif args.dataset == 'celeba':
     model = eval('ResNet' + str(args.resnet) + '()')
     test_data = jtestDataset(
-        '/home/bitwiz/codeden/data/leaf/data/celeba/data/test/all_data_iid_01_0_keep_5_test_9.json')
+        './codeden/data/leaf/data/celeba/data/test/all_data_iid_01_0_keep_5_test_9.json')
     if args.iid:
         splits = celeba_iid(
-            '/home/bitwiz/codeden/data/leaf/data/celeba/data/train/all_data_iid_01_0_keep_5_train_9.json')
+            './codeden/data/leaf/data/celeba/data/train/all_data_iid_01_0_keep_5_train_9.json')
     else:
         raise NotImplementedError
 elif args.dataset == 'fashionmnist':

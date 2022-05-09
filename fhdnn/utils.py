@@ -19,6 +19,7 @@ def generate_parser():
 	parser.add_argument('--simclr', action = 'store_true')
 	parser.add_argument('--log', action = 'store_true')
 	parser.add_argument('--cuda', type = int, default = 0)
+	parser.add_argument('--lifelong', action = 'store_true')
 
 	return parser
 

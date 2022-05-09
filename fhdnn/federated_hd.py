@@ -95,6 +95,9 @@ class federated_framework:
 
             print("\t=> Run: {} test accuracy: {}".format(run_counter, test_acc))
 
+            flip_acc = self.flip_test()
+            print("\t=> Run: {} test accuracy: {}".format(run_counter, flip_acc))
+
             if self.lifelong:
                 if run_counter > (2/3)* self.nrounds:
                     self.train_data = mnist_update(self.nclients, 1)
@@ -164,6 +167,27 @@ class federated_framework:
 
     def test(self):
         loader = DataLoader(self.test_data, batch_size=128, shuffle=False)
+        encoder = self.encoder.to(self.device)
+        classifier = self.classifier.to(self.device)
+        classifier.eval()
+
+        overall_acc = 0
+        for idx, batch in enumerate(loader):
+            x, y = batch
+            x = x.to(self.device)
+            y = y.to(self.device)
+            x = encoder(x)
+            y_hat = classifier(x)
+            _, y_hat = torch.max(y_hat, dim=1)
+            acc = accuracy(y_hat, y)
+            overall_acc += acc
+
+        overall_acc /= (idx + 1)
+
+        return overall_acc
+
+    def flip_test(self):
+        loader = DataLoader(self.flip_data, batch_size=128, shuffle=False)
         encoder = self.encoder.to(self.device)
         classifier = self.classifier.to(self.device)
         classifier.eval()

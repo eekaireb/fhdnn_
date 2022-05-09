@@ -31,12 +31,19 @@ class MnistData(pl.LightningDataModule):
                 transforms.ToTensor()
             ])
 
+            self.flip_transform = transforms.Compose([
+                transforms.ToTensor()
+                ])
+
 
     def trainset(self):
         return MNIST(root=self.root, train=True, download = True, transform = self.train_transform)
     
     def valset(self):
         return MNIST(root=self.root, train=False, download = True, transform = self.val_transform)
+
+    def flipset(self):
+        return MNIST(root=self.root, train=False, download = True, transform = self.flip_transform)
 
     @staticmethod
     def add_loader_specific_args(parent_parser):
@@ -54,6 +61,9 @@ class MnistData(pl.LightningDataModule):
         elif split == 'val':
             transform = self.val_transform
             dataset = self.valset()
+        elif split == 'flip':
+            transform = self.flip_transform
+            dataset = self.flipset()
         else:
             transform = self.val_transform
             dataset = self.valset()
@@ -71,3 +81,6 @@ class MnistData(pl.LightningDataModule):
     
     def test_dataloader(self):
         return self.make_loader(split='val')
+
+    def flip_dataloader(self):
+        return self.make_loader(split='flip')

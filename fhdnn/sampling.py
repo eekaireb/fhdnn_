@@ -120,7 +120,8 @@ def mnist_iid(num_users):
 	dm.val_transform = transforms.Compose([
 		transforms.ToTensor(),
 		transforms.Normalize((0.1307,), (0.3081,)),
-		transforms.Lambda(lambda x: x.repeat(3, 1, 1) )
+		transforms.Lambda(lambda x: x.repeat(3, 1, 1) ),
+		transforms.RandomVerticalFlip(1) 
 	])
 
 

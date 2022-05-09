@@ -136,7 +136,7 @@ def mnist_update(num_users, p):
 	dm.train_transform = transforms.Compose([
 		transforms.ToTensor(),
 		transforms.Normalize((0.1307,), (0.3081,)),
-		transforms.Lambda(lambda x: x.repeat(3, 1, 1),
+		transforms.Lambda(lambda x: x.repeat(3, 1, 1)),
 		transforms.RandomVerticalFlip(p) )
 	])
 	

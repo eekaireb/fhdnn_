@@ -21,7 +21,7 @@ import wandb
 
 class federated_framework:
     def __init__(
-        self, model, data_splits, test_data, nclients=10, fraction=0.5, nrounds=20,
+        self, model, data_splits, test_data, flip_data, nclients=10, fraction=0.5, nrounds=20,
         local_epochs=5, local_batch_size=10, cpu=False, lr=1, debug=False,
         scale_lr=0.99, log=False, cuda=0, iid=True, lifelong=True, **kwargs
     ):
@@ -38,6 +38,7 @@ class federated_framework:
         self.nclients = nclients
         self.train_data = data_splits
         self.test_data = test_data
+        self.flip_data = flip_data
         print("=> Initialized data")
 
         self.E = local_epochs

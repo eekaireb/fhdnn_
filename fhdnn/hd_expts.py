@@ -93,6 +93,7 @@ def run():
         ])
 
         test_data = data.valset()
+        flip_data = data.flipset()
 
         if args.iid:
             splits = fashionmnist_iid(args.nclients)
@@ -104,7 +105,7 @@ def run():
 
     print("=> Initialized data splits")
 
-    federated = federated_framework(model, splits, test_data, **vars(args))
+    federated = federated_framework(model, splits, test_data, flip_data, **vars(args))
     history = federated.train()
     accs = history['acc']
 

@@ -53,6 +53,11 @@ def run():
             transforms.Lambda(lambda x: x.repeat(3, 1, 1))
         ])
 
+        data.flip_transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Lambda(lambda x: x.repeat(3, 1, 1))
+        ])
+
         test_data = data.valset()
         flip_data = data.flipset()
 

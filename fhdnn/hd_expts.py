@@ -53,13 +53,8 @@ def run():
             transforms.Lambda(lambda x: x.repeat(3, 1, 1))
         ])
 
-        data.flip_transform = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Lambda(lambda x: x.repeat(3, 1, 1))
-        ])
 
         test_data = data.valset()
-        flip_data = data.flipset()
 
         if args.iid:
             splits = mnist_iid(args.nclients)
@@ -99,7 +94,6 @@ def run():
         ])
 
         test_data = data.valset()
-        flip_data = data.flipset()
 
         if args.iid:
             splits = fashionmnist_iid(args.nclients)
@@ -111,7 +105,7 @@ def run():
 
     print("=> Initialized data splits")
 
-    federated = federated_framework(model, splits, test_data, flip_data, **vars(args))
+    federated = federated_framework(model, splits, test_data, **vars(args))
     history = federated.train()
     accs = history['acc']
 

@@ -21,7 +21,7 @@ import wandb
 
 class federated_framework:
     def __init__(
-        self, model, data_splits, test_data, flip_data, nclients=10, fraction=0.5, nrounds=20,
+        self, model, data_splits, test_data, nclients=10, fraction=0.5, nrounds=20,
         local_epochs=5, local_batch_size=10, cpu=False, lr=1, debug=False,
         scale_lr=0.99, log=False, cuda=0, iid=True, lifelong=True, **kwargs
     ):
@@ -29,7 +29,7 @@ class federated_framework:
         self.lr = lr
         self.iid = iid
         self.encoder, self.classifier = copy.deepcopy(model)
-        self.classifier.alpha = lr
+        self.classifier.alpha = lr #p
         nclients = len(data_splits)
         self.clients = [copy.deepcopy(self.classifier)
                         for _ in range(nclients)]
@@ -38,7 +38,6 @@ class federated_framework:
         self.nclients = nclients
         self.train_data = data_splits
         self.test_data = test_data
-        self.flip_data = flip_data
         print("=> Initialized data")
 
         self.E = local_epochs
@@ -96,14 +95,6 @@ class federated_framework:
 
             print("\t=> Run: {} test accuracy: {}".format(run_counter, test_acc))
 
-            flip_acc = self.flip_test()
-            print("\t=> Run: {} test accuracy: {}".format(run_counter, flip_acc))
-
-            if self.lifelong:
-                if run_counter > (2/3)* self.nrounds:
-                    self.train_data = mnist_update(self.nclients, 1)
-                elif run_counter > (1/3)* self.nrounds:
-                    self.train_data = mnist_update(self.nclients, 0.5)
 
         history = {
             'rounds': rounds,
@@ -187,26 +178,6 @@ class federated_framework:
 
         return overall_acc
 
-    def flip_test(self):
-        loader = DataLoader(self.flip_data, batch_size=128, shuffle=False)
-        encoder = self.encoder.to(self.device)
-        classifier = self.classifier.to(self.device)
-        classifier.eval()
-
-        overall_acc = 0
-        for idx, batch in enumerate(loader):
-            x, y = batch
-            x = x.to(self.device)
-            y = y.to(self.device)
-            x = encoder(x)
-            y_hat = classifier(x)
-            _, y_hat = torch.max(y_hat, dim=1)
-            acc = accuracy(y_hat, y)
-            overall_acc += acc
-
-        overall_acc /= (idx + 1)
-
-        return overall_acc
 
 
 if __name__ == '__main__':

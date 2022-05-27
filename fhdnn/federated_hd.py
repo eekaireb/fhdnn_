@@ -119,6 +119,8 @@ class federated_framework:
                 x, y = batch
                 x = x.to(self.device)
                 y = y.to(self.device).type(torch.int)
+                #print(len(x))
+                #print(len(x[0]))
                 x = encoder(x)
                 y_hat = self.clients[client](x, y)
                 _, y_hat = torch.max(y_hat, dim=1)

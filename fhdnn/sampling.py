@@ -180,7 +180,7 @@ def mnist_niid(num_users, separated_path = None):
 		for batch in tqdm(dm.train_dataloader()):
 			x, y = batch
 			print(y)
-                        for label in range(10):
+			for label in range(10):
 				separated[label] = torch.cat([separated[label], x[y == label]], dim = 0)
 		
 		torch.save(separated, './codeden/data/mnist/mnist_class_wise.pt')

@@ -184,7 +184,7 @@ def mnist_niid(num_users, separated_path = None):
 				separated[label] = torch.cat([separated[label], x[y == label]], dim = 0)
 		        
 		for label in range(10):
-            print(len(separated[label]))
+			print(len(separated[label]))
 		torch.save(separated, './codeden/data/mnist/mnist_class_wise.pt')
 	else:
 		separated = torch.load(separated_path)

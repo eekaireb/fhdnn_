@@ -84,7 +84,9 @@ class MnistData(pl.LightningDataModule):
             train_subset, _ = torch.utils.data.random_split(dataset=dataset,
                                                         lengths=[train_subset_len,
                                                         len(dataset) - train_subset_len])
-
+            print("train data")
+            print(train_subset)
+            print(len(train_subset))
             self.train_sampler = SeqSampler(train_subset, self.blend_ratio, self.n_concurrent_classes) \
                 if self.training_data_type == 'sequential' else None
             train_loader = DataLoader(train_subset, batch_size=self.batch_size, shuffle=(self.train_sampler is None),
@@ -110,8 +112,11 @@ class MnistData(pl.LightningDataModule):
         return loader
 
     def client_loader(self, client_data):
+        print(client_data)
+        print(len(client_data))
         train_loader = DataLoader(client_data, batch_size=self.batch_size, shuffle=(self.train_sampler is None),
                             num_workers=self.workers, pin_memory=True, sampler=self.train_sampler)
+        return train_loader
     
     def train_dataloader(self):
         return self.make_loader(split='train')

@@ -40,6 +40,7 @@ class federated_framework:
         self.train_data = data_splits
         self.test_data = test_data
         print("=> Initialized data")
+        print(data)
         self.data = data
         self.E = local_epochs
         self.B = local_batch_size
@@ -111,6 +112,8 @@ class federated_framework:
         #loader = DataLoader(
         #    self.train_data[client], batch_size=self.B, shuffle=True)
         loader = self.data.client_loader(self.train_data[client])
+        #print(self.data)
+        #print(loader)
         self.clients[client] = self.clients[client].to(self.device)
         encoder = self.encoder.to(self.device)
         self.clients[client].train()

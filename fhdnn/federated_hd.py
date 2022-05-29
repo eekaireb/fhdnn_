@@ -110,7 +110,7 @@ class federated_framework:
     def fit(self, client):
         #loader = DataLoader(
         #    self.train_data[client], batch_size=self.B, shuffle=True)
-        loader = data.client_loader(self.train_data[client])
+        loader = self.data.client_loader(self.train_data[client])
         self.clients[client] = self.clients[client].to(self.device)
         encoder = self.encoder.to(self.device)
         self.clients[client].train()

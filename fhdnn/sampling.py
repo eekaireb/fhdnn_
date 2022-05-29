@@ -183,22 +183,30 @@ def mnist_niid(num_users, separated_path = None):
 			for label in range(10):
 				separated[label] = torch.cat([separated[label], x[y == label]], dim = 0)
 		        
-		for label in range(10):
-			print(len(separated[label]))
+		#for label in range(10):
+			#print(len(separated[label]))
+		print(len(separated[1]))
 		torch.save(separated, './codeden/data/mnist/mnist_class_wise.pt')
 	else:
 		separated = torch.load(separated_path)
 	
 	nshards = 200
-	shard_size = 300
+	#shard_size = 300
+	shard_size = len(separated[1])/200
 	shards_per_user = nshards // num_users
 
 	shards = []
 
-	for label in range(10):
+	'''for label in range(10):
 		for i in range(0, 6000, shard_size):
 			batch_x = separated[label][i : i + shard_size]
 			batch_y = [label] * batch_x.shape[0]
+			batch_y = torch.tensor(batch_y)
+			shards.append((batch_x, batch_y))
+	'''
+	for i in range(0, 6000, shard_size):
+			batch_x = separated[1][i : i + shard_size]
+			batch_y = [1] * batch_x.shape[0]
 			batch_y = torch.tensor(batch_y)
 			shards.append((batch_x, batch_y))
 	

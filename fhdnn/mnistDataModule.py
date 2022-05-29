@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 import torchvision.transforms as transforms
+import torch.utils.data
 from torch.utils.data import DataLoader
 from torchvision.datasets import MNIST
 import SeqSampler
@@ -79,7 +80,7 @@ class MnistData(pl.LightningDataModule):
             num_labels = len(list(set(labels)))
             train_subset_len = num_labels * self.train_samples_per_cls
 
-            train_subset, _ = DataLoader.random_split(dataset=dataset,
+            train_subset, _ = torch.utils.data.random_split(dataset=dataset,
                                                         lengths=[train_subset_len,
                                                         len(dataset) - train_subset_len])
 

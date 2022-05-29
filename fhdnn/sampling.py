@@ -192,7 +192,7 @@ def mnist_niid(num_users, separated_path = None):
 	
 	nshards = 200
 	#shard_size = 300
-	shard_size = len(separated[1])/200
+	shard_size = int(len(separated[1])/200)
 	shards_per_user = nshards // num_users
 
 	shards = []

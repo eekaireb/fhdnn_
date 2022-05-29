@@ -22,7 +22,7 @@ import wandb
 
 class federated_framework:
     def __init__(
-        self, model, data_splits, test_data, nclients=10, fraction=0.5, nrounds=20,
+        self, model, data, data_splits, test_data, nclients=10, fraction=0.5, nrounds=20,
         local_epochs=5, local_batch_size=10, cpu=False, lr=1, debug=False,
         scale_lr=0.99, log=False, cuda=0, iid=True, lifelong=True, **kwargs
     ):
@@ -40,7 +40,7 @@ class federated_framework:
         self.train_data = data_splits
         self.test_data = test_data
         print("=> Initialized data")
-
+        self.data = data
         self.E = local_epochs
         self.B = local_batch_size
         self.C = fraction
@@ -110,7 +110,7 @@ class federated_framework:
     def fit(self, client):
         #loader = DataLoader(
         #    self.train_data[client], batch_size=self.B, shuffle=True)
-        loader = MnistData.client_loader(self.train_data[client])
+        loader = data.client_loader(self.train_data[client])
         self.clients[client] = self.clients[client].to(self.device)
         encoder = self.encoder.to(self.device)
         self.clients[client].train()

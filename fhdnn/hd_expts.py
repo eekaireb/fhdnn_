@@ -105,7 +105,7 @@ def run():
 
     print("=> Initialized data splits")
 
-    federated = federated_framework(model, splits, test_data, **vars(args))
+    federated = federated_framework(model, data, splits, test_data, **vars(args))
     history = federated.train()
     accs = history['acc']
 

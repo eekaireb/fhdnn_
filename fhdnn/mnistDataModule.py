@@ -14,7 +14,7 @@ class MnistData(pl.LightningDataModule):
         self.debug = debug
         self.root = root
 
-        self.train_samples_per_cls = 3000
+        self.train_samples_per_cls = 30000
         self.test_samples_per_cls = 500
         self.training_data_type = 'sequential'
         self.blend_ratio = 0
@@ -87,15 +87,11 @@ class MnistData(pl.LightningDataModule):
             print("train data")
             print(train_subset)
             print(len(train_subset))
-            #self.train_sampler = SeqSampler(train_subset, self.blend_ratio, self.n_concurrent_classes) \
-            #    if self.training_data_type == 'sequential' else None
-            #train_loader = DataLoader(train_subset, batch_size=self.batch_size, shuffle=(self.train_sampler is None),
-            #                num_workers=self.workers, pin_memory=True, sampler=self.train_sampler)
-
-            self.train_sampler = SeqSampler(dataset, self.blend_ratio, self.n_concurrent_classes) \
+            self.train_sampler = SeqSampler(train_subset, self.blend_ratio, self.n_concurrent_classes) \
                 if self.training_data_type == 'sequential' else None
-            train_loader = DataLoader(dataset, batch_size=self.batch_size, shuffle=(self.train_sampler is None),
+            train_loader = DataLoader(train_subset, batch_size=self.batch_size, shuffle=(self.train_sampler is None),
                             num_workers=self.workers, pin_memory=True, sampler=self.train_sampler)
+
             return train_loader
             #
         elif split == 'val':
@@ -117,8 +113,6 @@ class MnistData(pl.LightningDataModule):
         return loader
 
     def client_loader(self, client_data):
-        print(client_data)
-        print(len(client_data))
         train_loader = DataLoader(client_data, batch_size=self.batch_size, shuffle=(self.train_sampler is None),
                             num_workers=self.workers, pin_memory=True, sampler=self.train_sampler)
         return train_loader

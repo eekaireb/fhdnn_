@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from torchvision.datasets import MNIST
+import SeqSampler
 import pytorch_lightning as pl
 
 class MnistData(pl.LightningDataModule):
@@ -12,6 +13,12 @@ class MnistData(pl.LightningDataModule):
         self.debug = debug
         self.root = root
 
+        self.train_samples_per_cls = 3000
+        self.test_samples_per_cls = 500
+        self.training_data_type = 'sequential'
+        self.blend_ratio = 0
+        self.n_concurrent_classes = 1
+        
         if expt == 'cnn':
             self.train_transform = transforms.Compose([
                 transforms.ToTensor(),
@@ -24,6 +31,10 @@ class MnistData(pl.LightningDataModule):
             ])
         else:
             self.train_transform = transforms.Compose([
+                #
+                transforms.RandomAffine(degrees=20, translate=(0.1, 0.1), scale=(0.9, 1.1)),
+                transforms.ColorJitter(brightness=0.2, contrast=0.2),
+                #
                 transforms.ToTensor()
             ])
 
@@ -33,7 +44,14 @@ class MnistData(pl.LightningDataModule):
 
             self.flip_transform = transforms.Compose([
                 transforms.ToTensor()
-                ])
+            ])
+
+            self.train_transform_runtime = transforms.Compose([
+                transforms.ToPILImage(),
+                transforms.RandomAffine(degrees=20, translate=(0.1, 0.1), scale=(0.9, 1.1)),
+                transforms.ColorJitter(brightness=0.2, contrast=0.2),
+                transforms.ToTensor(),
+            ])
 
 
     def trainset(self):
@@ -56,22 +74,38 @@ class MnistData(pl.LightningDataModule):
     
     def make_loader(self, split):
         if split == 'train':
-            transform = self.train_transform
             dataset = self.trainset()
+            labels = dataset.targets.detach().cpu().numpy()
+            num_labels = len(list(set(labels)))
+            train_subset_len = num_labels * self.train_samples_per_cls
+
+            train_subset, _ = DataLoader.random_split(dataset=dataset,
+                                                        lengths=[train_subset_len,
+                                                        len(dataset) - train_subset_len])
+
+            train_sampler = SeqSampler(train_subset, self.blend_ratio, self.n_concurrent_classes) \
+                if self.training_data_type == 'sequential' else None
+            train_loader = DataLoader(train_subset, batch_size=self.batch_size, shuffle=(train_sampler is None),
+                            num_workers=self.workers, pin_memory=True, sampler=train_sampler)
+            return train_loader
+            #
         elif split == 'val':
-            transform = self.val_transform
             dataset = self.valset()
+            val_subset_len = num_labels * self.test_samples_per_cls
+            val_subset, _ = DataLoader.random_split(dataset=dataset,
+                                                    lengths=[val_subset_len, 
+                                                    len(dataset) - val_subset_len])
+            val_loader = DataLoader(val_subset, batch_size=self.batch_size, shuffle=True,
+                            num_workers=0, pin_memory=True)
+            return val_loader
         elif split == 'flip':
-            transform = self.flip_transform
             dataset = self.flipset()
         else:
-            transform = self.val_transform
             dataset = self.valset()
-        
+
         loader = DataLoader(dataset, batch_size = self.batch_size, num_workers = self.workers)
         
         return loader
-
     
     def train_dataloader(self):
         return self.make_loader(split='train')

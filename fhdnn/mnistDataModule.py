@@ -3,7 +3,7 @@ import torchvision.transforms as transforms
 import torch.utils.data
 from torch.utils.data import DataLoader
 from torchvision.datasets import MNIST
-import SeqSampler
+from SeqSampler import SeqSampler
 import pytorch_lightning as pl
 
 class MnistData(pl.LightningDataModule):

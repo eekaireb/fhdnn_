@@ -15,6 +15,7 @@ from sampling import *
 
 from pl_bolts.models.self_supervised import SimCLR
 from cifarDataModule import CifarData
+from mnistDataModule import MnistData
 
 import wandb
 
@@ -107,8 +108,9 @@ class federated_framework:
         return history
 
     def fit(self, client):
-        loader = DataLoader(
-            self.train_data[client], batch_size=self.B, shuffle=True)
+        #loader = DataLoader(
+        #    self.train_data[client], batch_size=self.B, shuffle=True)
+        loader = MnistData.client_loader(self.train_data[client])
         self.clients[client] = self.clients[client].to(self.device)
         encoder = self.encoder.to(self.device)
         self.clients[client].train()

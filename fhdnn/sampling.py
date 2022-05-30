@@ -15,7 +15,6 @@ from multiprocessing import Pool
 from PIL import Image
 from functools import partial
 import torchvision.transforms.functional as TF
-np.set_printoptions(threshold=np.inf)
 
 ################### Fashion MNIST ################### 
 
@@ -177,10 +176,13 @@ def mnist_niid(num_users, separated_path = None):
 
 		for label in range(10):
 			separated[label] = torch.tensor([])
-		
+
+		save = True
 		for batch in tqdm(dm.train_dataloader()):
 			x, y = batch
-			print(x)
+			if save:
+				np.savetxt('data.csv', x, delimiter=',')
+				save = False
 			for label in range(10):
 				separated[label] = torch.cat([separated[label], x[y == label]], dim = 0)
 		        

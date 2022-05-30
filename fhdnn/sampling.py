@@ -181,7 +181,10 @@ def mnist_niid(num_users, separated_path = None):
 		for batch in tqdm(dm.train_dataloader()):
 			x, y = batch
 			if save:
-				np.savetxt('data.csv', x, delimiter=',')
+				for i in range(len(x)):
+					for j in range(len(x[i])):
+						for k in range(len(x[i][j])):
+							np.savetxt('x.csv', x[i][j][k], delimiter=',')
 				save = False
 			for label in range(10):
 				separated[label] = torch.cat([separated[label], x[y == label]], dim = 0)
